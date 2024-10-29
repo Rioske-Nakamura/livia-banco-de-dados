@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8"> <!-- Define a codificação de caracteres como UTF-8 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Configura a viewport para responsividade -->
+    <title>Estudantes</title> <!-- Título da página que aparece na aba do navegador -->
+    <style>
+        /* Estilos para o corpo da página */
+        body {
+            font-family: Arial, sans-serif; /* Fonte utilizada para o texto */
+            background-color: #f4f4f4; /* Cor de fundo da página */
+            margin: 0; /* Remove margens padrão */
+            padding: 20px; /* Adiciona preenchimento ao redor do conteúdo */
+            color: #333; /* Cor do texto */
+        }
+
+        /* Estilos para o título principal da página */
+        h1 {
+            text-align: center; /* Alinha o título ao centro */
+            color: #2c3e50; /* Cor do texto do título */
+            margin-bottom: 20px; /* Espaço abaixo do título */
+        }
+
+        /* Estilos para a barra de pesquisa */
+        #barra-pesquisa {
+            text-align: center; /* Centraliza os elementos dentro da barra de pesquisa */
+            margin-bottom: 20px; /* Espaço abaixo da barra de pesquisa */
+        }
+
+        /* Estilos para o campo de entrada de pesquisa */
+        #pesquisar-input {
+            padding: 10px; /* Preenchimento interno do campo */
+            width: 250px; /* Largura do campo */
+            border: 1px solid #ccc; /* Borda cinza clara */
+            border-radius: 4px; /* Bordas arredondadas */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra leve para dar profundidade */
+        }
+
+        /* Estilos para o botão de pesquisa */
+        #pesquisar-btn {
+            padding: 10px 15px; /* Preenchimento interno do botão */
+            background-color: orange; /* Cor de fundo do botão */
+            border: none; /* Sem borda */
+            border-radius: 4px; /* Bordas arredondadas */
+            color: white; /* Cor do texto do botão */
+            cursor: pointer; /* Cursor muda para indicar que é clicável */
+            margin-left: 10px; /* Espaço à esquerda do botão */
+            transition: background-color 0.3s; /* Transição suave para mudança de cor */
+        }
+
+        /* Estilo para o botão ao passar o mouse */
+        #pesquisar-btn:hover {
+            background-color: darkorange; /* Cor de fundo ao passar o mouse */
+        }
+
+        /* Estilos para a tabela */
+        table {
+            width: 100%; /* Largura total da tabela */
+            border-collapse: collapse; /* Remove espaçamento entre células */
+            margin-top: 20px; /* Espaço acima da tabela */
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Sombra leve para a tabela */
+        }
+
+        /* Estilos para cabeçalhos e células da tabela */
+        th, td {
+            padding: 12px; /* Preenchimento interno das células */
+            text-align: center; /* Alinha o texto ao centro */
+            border-bottom: 1px solid #ccc; /* Borda inferior cinza clara */
+        }
+
+        th {
+            background-color: #3498db; /* Cor de fundo dos cabeçalhos */
+            color: white; /* Cor do texto dos cabeçalhos */
+        }
+
+        /* Estilo para linha da tabela ao passar o mouse */
+        tr:hover {
+            background-color: #f1f1f1; /* Cor de fundo ao passar o mouse sobre a linha */
+        }
+
+        /* Estilos responsivos para telas menores */
+        @media (max-width: 600px) {
+            #pesquisar-input {
+                width: 80%; /* Largura do campo de pesquisa em telas pequenas */
+            }
+
+            #pesquisar-btn {
+                width: 15%; /* Largura do botão em telas pequenas */
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Lista de Estudantes</h1> <!-- Título da página -->
+
+    <!-- Barra de pesquisa -->
+    <div id="barra-pesquisa">
+        <input type="text" id="pesquisar-input" placeholder="Pesquisar por nome"> <!-- Campo de entrada para pesquisa -->
+        <button id="pesquisar-btn" onclick="filtrarEstudantes()">Pesquisar</button> <!-- Botão que chama a função de pesquisa -->
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th> <!-- Cabeçalho para ID do estudante -->
+                <th>Nome</th> <!-- Cabeçalho para Nome do estudante -->
+                <th>Idade</th> <!-- Cabeçalho para Idade do estudante -->
+                <th>Turma</th> <!-- Cabeçalho para Turma do estudante -->
+                <th>Média</th> <!-- Cabeçalho para Média do estudante -->
+            </tr>
+        </thead>
+        <tbody id="tabela-estudantes">
+            <!-- Dados dos estudantes serão inseridos aqui pelo JavaScript -->
+        </tbody>
+    </table>
+
+    <script>
+        // Função assíncrona para carregar os estudantes do servidor
+        async function carregarEstudantes() {
+            try {
+                const response = await fetch('http://localhost:3000/estudantes'); // Faz a requisição para obter os estudantes
+                const estudantes = await response.json(); // Converte a resposta em JSON
+                exibirEstudantes(estudantes); // Chama a função para exibir os estudantes
+            } catch (error) {
+                console.error('Erro ao carregar estudantes:', error); // Captura e exibe erros no console
+            }
+        }
+
+        // Função para exibir os estudantes na tabela
+        function exibirEstudantes(estudantes) {
+            const tabela = document.getElementById('tabela-estudantes'); // Seleciona o corpo da tabela
+            tabela.innerHTML = ''; // Limpa a tabela antes de exibir os dados
+            estudantes.forEach(estudante => { // Itera sobre cada estudante
+                const row = document.createElement('tr'); // Cria uma nova linha
+                row.innerHTML = ` // Define o conteúdo da nova linha
+                    <td>${estudante.id}</td> <!-- ID do estudante -->
+                    <td>${estudante.nome}</td> <!-- Nome do estudante -->
+                    <td>${estudante.idade}</td> <!-- Idade do estudante -->
+                    <td>${estudante.turma}</td> <!-- Turma do estudante -->
+                    <td>${estudante.media}</td> <!-- Média do estudante -->
+                `;
+                tabela.appendChild(row); // Adiciona a nova linha à tabela
+            });
+        }
+
+        // Função para filtrar estudantes com base no nome
+        async function filtrarEstudantes() {
+            const nome = document.getElementById('pesquisar-input').value.toLowerCase(); // Obtém o valor do campo de pesquisa
+            try {
+                const response = await fetch('http://localhost:3000/estudantes'); // Faz a requisição para obter os estudantes
+                const estudantes = await response.json(); // Converte a resposta em JSON
+                // Filtra os estudantes cujo nome inclui o valor da pesquisa
+                const estudantesFiltrados = estudantes.filter(estudante =>
+                    estudante.nome.toLowerCase().includes(nome)
+                );
+                exibirEstudantes(estudantesFiltrados); // Chama a função para exibir os estudantes filtrados
+            } catch (error) {
+                console.error('Erro ao filtrar estudantes:', error); // Captura e exibe erros no console
+            }
+        }
+
+        carregarEstudantes(); // Chama a função para carregar estudantes ao inicializar a página
+    </script>
+</body>
+</html>
